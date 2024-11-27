@@ -2,16 +2,12 @@ Class {
 	#name : #EngineComponent,
 	#superclass : #Object,
 	#instVars : [
-		'coordinatesSet',
-		'content'
+		'content',
+		'row',
+		'column'
 	],
 	#category : #'Adventofcode-2023-03'
 }
-
-{ #category : #transformation }
-EngineComponent class >> coordinatesFromInterval: anInterval atIndex: aNumber [
-	^ anInterval collectAsSet: [ :column | aNumber @ column ]
-]
 
 { #category : #example }
 EngineComponent class >> createFromTokens [
@@ -19,32 +15,34 @@ EngineComponent class >> createFromTokens [
 	
 	| token component |
 	token := EngineParser parseExample first.
-	component := self fromToken: token atIndex: 3.
-	self assert: component coordinatesSet equals: {3@3 . 4@3} asSet.
+	component := self fromToken: token atIndex: 5.
+	self assert: component row equals: 5.
+	self assert: component column equals: 3.
 	self assert: component content equals: 25.
 	^ component
 ]
 
 { #category : #'instance creation' }
-EngineComponent class >> fromCoordinates: aSet withContent: anObject [
-	| component |
-	component := self new .
-	component coordinatesSet: aSet.
-	component content: anObject.
-	^ component
-]
-
-{ #category : #'instance creation' }
 EngineComponent class >> fromToken: aToken atIndex: aNumber [
-	| coordinates component |
-	coordinates := (aToken at: #location) collectAsSet: [ :i | i @ aNumber ].
-	component := self fromCoordinates: coordinates withContent: (aToken at: #value).
+	| component |
+	component := self new.
+	component row: aNumber; column: (aToken at: #location); content: (aToken at: #value).
 	^ component
 ]
 
 { #category : #equality }
 EngineComponent >> = aComponent [
-	^ (self coordinatesSet = aComponent coordinatesSet) & (self content = aComponent content)
+	^ (self row = aComponent row) & (self column = aComponent column) & (self content = aComponent content)
+]
+
+{ #category : #accessing }
+EngineComponent >> column [
+	^ column
+]
+
+{ #category : #accessing }
+EngineComponent >> column: anObject [
+	column := anObject
 ]
 
 { #category : #accessing }
@@ -58,41 +56,44 @@ EngineComponent >> content: anObject [
 ]
 
 { #category : #accessing }
-EngineComponent >> coordinatesSet [
-	^ coordinatesSet
-]
-
-{ #category : #accessing }
-EngineComponent >> coordinatesSet: anObject [
-	coordinatesSet := anObject
-]
-
-{ #category : #example }
-EngineComponent >> createFromCoordinates [
-	<gtExample>
-	
-	| component |
-	component := EngineComponent fromCoordinates: {4@6 . 5@6 . 6@6} withContent: 123.
-	^ component
-]
-
-{ #category : #accessing }
 EngineComponent >> getAdjacentCoordinates [
-	^ (coordinatesSet flatCollectAsSet: [ :c | c eightNeighbors ]) difference: coordinatesSet
+	| coordinates |
+	coordinates := self getCoordinates.
+	^ (coordinates flatCollectAsSet: [ :c | c eightNeighbors ]) difference: coordinates
+]
+
+{ #category : #accessing }
+EngineComponent >> getCoordinates [
+	| columns |
+	columns := column to: (column + content asString size - 1).
+	^ columns collect: [ :c | c @ row ]
 ]
 
 { #category : #hashing }
 EngineComponent >> hash [
-	self coordinatesSet hash + self content hash
+	(self row hash * 2) + (self column hash * 3) + (self content hash * 5)
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #printing }
 EngineComponent >> printOn: aStream [
-	aStream nextPutAll: 'EngineComponent ('.
 	content printOn: aStream.
 	aStream nextPutAll: ', '.
-	coordinatesSet printOn: aStream.
-	aStream nextPut: $).
+	(column @ row) printOn: aStream.
+]
+
+{ #category : #accessing }
+EngineComponent >> row [
+	^ row
+]
+
+{ #category : #accessing }
+EngineComponent >> row: anObject [
+	row := anObject
+]
+
+{ #category : #accessing }
+EngineComponent >> size [
+	^ content asString size
 ]
 
 { #category : #example }
@@ -100,7 +101,7 @@ EngineComponent >> surroundingCoordinates [
 	<gtExample>
 	
 	| component |
-	component := self createFromCoordinates.
-	self assert: component getAdjacentCoordinates equals: {3@5 . 4@5 . 5@5 . 6@5 . 7@5 . 3@6 . 7@6 . 3@7 . 4@7 . 5@7 . 6@7 . 7@7} asSet.
+	component := self class createFromTokens.
+	self assert: component getAdjacentCoordinates equals: { 2@4 . 3@4 . 4@4 . 5@4 . 2@5 . 5@5 . 2@6 . 3@6 . 4@6 . 5@6 } asSet.
 	^ component
 ]

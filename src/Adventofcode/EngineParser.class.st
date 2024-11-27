@@ -15,9 +15,9 @@ EngineParser class >> parseExample [
 	<gtExample>
 	
 	| tokens |
-	tokens := self parse: '..25.*.4@..$..'.
-	self assert: tokens size equals: 5.
-	self assert: tokens first equals: (Dictionary newFromKeys: #(#location #value) andValues: {(3 to: 4) . 25}).
+	tokens := self parse: '..25.*.4@&.$..'.
+	self assert: tokens size equals: 6.
+	self assert: tokens first equals: (Dictionary newFromKeys: #(#location #value) andValues: {3 . 25}).
 	^ tokens
 ]
 
@@ -36,9 +36,12 @@ EngineParser >> number [
 	^ (#digit asPParser plus token trim: empty)
 		==> [ :nToken | 
 			Dictionary
-				newFromKeys: #('location' 'value')
-				andValues: {nToken start to: nToken stop.
-						nToken value asNumber} ]
+				newFromKeys: #(#location #value)
+				andValues: {
+					nToken start.
+					nToken value asNumber
+				}
+			]
 ]
 
 { #category : #accessing }
@@ -51,7 +54,10 @@ EngineParser >> symbol [
 	^ (#any asPParser token trim: empty)
 		==> [ :sToken | 
 			Dictionary
-				newFromKeys: #('location' 'value')
-				andValues: {sToken start to: sToken stop.
-						sToken value} ]
+				newFromKeys: #(#location #value)
+				andValues: {
+					sToken start.
+					sToken value
+				}
+			]
 ]

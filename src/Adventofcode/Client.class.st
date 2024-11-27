@@ -12,7 +12,16 @@ Class {
 { #category : #default }
 Client class >> getDefaultToken [
 
+	| platform |
+	platform := OSPlatform current.
+	platform isUnix ifTrue: [ ^ self unixDefaultTokenPath contents ].
 	^ '//Users/olahesoo/.tokens/aoc_session' asFileReference contents.
+]
+
+{ #category : #'as yet unclassified' }
+Client class >> unixDefaultTokenPath [
+
+	^ '.tokens/aoc_session' asFileReference
 ]
 
 { #category : #'instance creation' }

@@ -2,7 +2,12 @@ Class {
 	#name : #EngineElement,
 	#superclass : #BlElement,
 	#instVars : [
-		'engine'
+		'engine',
+		'components'
 	],
 	#category : #'Adventofcode-2023-03'
 }
+
+{ #category : #initialization }
+EngineElement >> initializeFor: anEngine [
+]
