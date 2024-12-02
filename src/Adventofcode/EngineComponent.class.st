@@ -32,7 +32,9 @@ EngineComponent class >> fromToken: aToken atIndex: aNumber [
 
 { #category : #equality }
 EngineComponent >> = aComponent [
-	^ (self row = aComponent row) & (self column = aComponent column) & (self content = aComponent content)
+	^ (aComponent class = self class)
+		ifTrue: [ (self row = aComponent row) & (self column = aComponent column) & (self content = aComponent content) ]
+		ifFalse: [ false ]
 ]
 
 { #category : #accessing }
@@ -71,7 +73,17 @@ EngineComponent >> getCoordinates [
 
 { #category : #hashing }
 EngineComponent >> hash [
-	(self row hash * 2) + (self column hash * 3) + (self content hash * 5)
+	^ (self row hash * 2) + (self column hash * 3) + (self content hash * 5)
+]
+
+{ #category : #'as yet unclassified' }
+EngineComponent >> isNumberComponent [
+	^ self content isNumber
+]
+
+{ #category : #'as yet unclassified' }
+EngineComponent >> isSymbolComponent [
+	^ self isNumberComponent not
 ]
 
 { #category : #printing }
