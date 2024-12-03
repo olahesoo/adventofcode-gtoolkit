@@ -3,7 +3,8 @@ Class {
 	#superclass : #MemoryMulParser,
 	#instVars : [
 		'do',
-		'dont'
+		'dont',
+		'mixed_operation'
 	],
 	#category : #'Adventofcode-2024-03'
 }
@@ -20,15 +21,10 @@ MemoryMulDoParser >> dont [
 
 { #category : #grammar }
 MemoryMulDoParser >> memory [
-	^ (do / dont / mixed_mul) star
+	^ mixed_operation star
 ]
 
-{ #category : #grammar }
-MemoryMulDoParser >> mixed_do [
-	^ do sea ==> #second
-]
-
-{ #category : #grammar }
-MemoryMulDoParser >> mixed_dont [
-	^ dont sea == #second
+{ #category : #'as yet unclassified' }
+MemoryMulDoParser >> mixed_operation [
+	^ (do / dont / mul_operation) sea ==> #second
 ]
