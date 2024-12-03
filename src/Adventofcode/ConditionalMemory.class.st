@@ -12,7 +12,7 @@ Class {
 ConditionalMemory class >> fromInput: input [
 	| conditionalMemory |
 	conditionalMemory := self new.
-	conditionalMemory memory: (MemoryMulDoParser parse: input).
+	conditionalMemory memory: (MemoryMulDoParser new optimize parse: input).
 	^ conditionalMemory
 ]
 
