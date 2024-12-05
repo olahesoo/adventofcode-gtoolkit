@@ -29,7 +29,9 @@ Engine class >> parseOneLine [
 	| components |
 	components := self parseRow: '.*.25.4@..$..' withIndex: 1.
 	self assert: components size equals: 5.
-	self assert: components first equals: (EngineComponent fromCoordinates: {2@1} asSet withContent: #*).
+	self assert: components first row equals: 1.
+	self assert: components first column equals: 2.
+	self assert: components first content equals: '*'.
 	^ components
 ]
 
