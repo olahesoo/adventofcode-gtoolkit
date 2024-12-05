@@ -1,26 +1,26 @@
 Class {
-	#name : #ComponentGlyphElement,
+	#name : #GlyphElement,
 	#superclass : #BlElement,
 	#instVars : [
 		'character'
 	],
-	#category : #'Adventofcode-2023-03'
+	#category : #'Adventofcode-Utils'
 }
 
 { #category : #'instance creation' }
-ComponentGlyphElement class >> fromCharacter: aCharacter [
-	^ self new initializeCharacter: aCharacter
+GlyphElement class >> fromCharacter: aCharacter [
+	^ self new useCharacter: aCharacter
 ]
 
 { #category : #initialization }
-ComponentGlyphElement >> initialize [
+GlyphElement >> initialize [
 	super initialize.
 	self size: 20 asPoint.
 	self layout: BlFrameLayout new
 ]
 
 { #category : #'as yet unclassified' }
-ComponentGlyphElement >> initializeCharacter: aCharacter [
+GlyphElement >> useCharacter: aCharacter [
 	character := BlTextElement new text: aCharacter asRopedText.
 	character constraintsDo: [ :c |
 		c frame horizontal alignCenter.

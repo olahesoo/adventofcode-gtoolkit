@@ -2,10 +2,32 @@ Class {
 	#name : #XmasSearch,
 	#superclass : #Object,
 	#instVars : [
-		'letters'
+		'letters',
+		'sideLength'
 	],
 	#category : #'Adventofcode-2024-04'
 }
+
+{ #category : #example }
+XmasSearch class >> aocExample [
+	<gtExample>
+	
+	| sampleLines xmasSearch |
+	sampleLines := Character lf split: 'MMMSXXMASM
+MSAMXMSMSA
+AMXSXMAAMM
+MSAMASMSMX
+XMASAMXAMM
+XXAMMXXAMA
+SMSMSASXSS
+SAXAMASAAA
+MAMMMXMMMM
+MXMXAXMASX'.
+	xmasSearch := self fromLines: sampleLines.
+	self assert: (xmasSearch countXmas = 18).
+	self assert: (xmasSearch countX_mas = 9).
+	^ xmasSearch
+]
 
 { #category : #'instance creation' }
 XmasSearch class >> fromLines: inputLines [
@@ -50,19 +72,35 @@ XmasSearch >> checkX_masAt: centerPoint topLeft: topLeftPoint [
 
 { #category : #counting }
 XmasSearch >> countX_mas [
-	^ (letters keys select: [ :centerPoint | self checkX_masAt: centerPoint ]) size
+	^ self findX_mas size
 ]
 
 { #category : #counting }
 XmasSearch >> countXmas [
-	^ (letters keys collect: [ :startPoint | 
-		((0@0) eightNeighbors select: [ :directionPoint | self searchFor: 'XMAS' startingAt: startPoint inDirection: directionPoint ]) size
-	]) sumNumbers
+	^ self findXmas size
+]
+
+{ #category : #searching }
+XmasSearch >> findX_mas [
+	^ letters keys select: [ :centerPoint | self checkX_masAt: centerPoint ]
+]
+
+{ #category : #searching }
+XmasSearch >> findXmas [
+	"Return a collection of arrays in the shape of {startPoint, direction} for the word 'XMAS'"
+	^ letters keys flatCollect: [ :startPoint |
+		(0@0) eightNeighbors select: [ :directionPoint | self searchFor: 'XMAS' startingAt: startPoint inDirection: directionPoint] thenCollect: [ :directionPoint | {startPoint . directionPoint} ]
+	]
 ]
 
 { #category : #initalization }
 XmasSearch >> initialize [
 	letters := Dictionary new
+]
+
+{ #category : #accessing }
+XmasSearch >> letters [
+	^ letters
 ]
 
 { #category : #checking }
@@ -73,13 +111,17 @@ XmasSearch >> searchFor: word startingAt: startPoint inDirection: directionPoint
 	^ true
 ]
 
+{ #category : #accessing }
+XmasSearch >> sideLength [
+	^ sideLength
+]
+
 { #category : #'instance creation' }
 XmasSearch >> useInputLines: inputLines [
-	| inputSize |
 	(inputLines size = inputLines first size) ifFalse: [ self error: 'Only square inputs are supported' ].
-	inputSize := inputLines size.
-	1 to: inputSize do: [ :x |
-		1 to: inputSize do: [ :y |
+	sideLength := inputLines size.
+	1 to: sideLength do: [ :x |
+		1 to: sideLength do: [ :y |
 			letters at: (x@y) put: ((inputLines at: y) at: x).
 		]
 	]

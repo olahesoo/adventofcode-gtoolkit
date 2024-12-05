@@ -15,7 +15,7 @@ EngineComponentElement class >> initializeFor: aComponent [
 	contentArray := aComponent content asString asArray.
 	element size: (contentArray size * 20 @ 20).
 	glyphs := contentArray collect: [ :c |
-		ComponentGlyphElement fromCharacter: c ].
+		GlyphElement fromCharacter: c ].
 	element addChildren: glyphs.
 	^ element
 ]
