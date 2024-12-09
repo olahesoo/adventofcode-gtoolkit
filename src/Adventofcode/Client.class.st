@@ -18,6 +18,14 @@ Client class >> getDefaultToken [
 	^ '//Users/olahesoo/.tokens/aoc_session' asFileReference contents.
 ]
 
+{ #category : #transformation }
+Client class >> splitLines: someLines [
+	| lines |
+	lines := Character lf split: someLines.
+	lines removeLast.
+	^ lines
+]
+
 { #category : #'as yet unclassified' }
 Client class >> unixDefaultTokenPath [
 
@@ -62,11 +70,7 @@ Client >> input [
 
 { #category : #acccessing }
 Client >> inputLines [
-
-	| lines |
-	lines := Character lf split: self input.
-	lines removeLast.
-	^ lines
+	^ self class splitLines: self input
 ]
 
 { #category : #accessing }
